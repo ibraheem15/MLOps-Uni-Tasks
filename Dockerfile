@@ -14,7 +14,7 @@ RUN mkdir -p models
 COPY backend/ backend/
 
 # Copy models 
-COPY models models/ 2>/dev/null || :
+COPY models/ models/
 
 EXPOSE 5000
 
