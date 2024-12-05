@@ -164,7 +164,6 @@ raw_data.csv
 client_secret.json
 generated_token.json
 processed_data.csv
-model.pkl
 raw_data.csv
 weather_scaler.joblib
 mlartifacts/
