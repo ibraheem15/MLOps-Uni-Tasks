@@ -28,7 +28,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///weather_app.db"
 db = SQLAlchemy(app)
 
 # Load model
-with open("models/model.pkl", "rb") as f:
+with open("D:\FAST\Semester 7\MLOps\Project\MLOps_Project\models\model.pkl", "rb") as f:
     model = pickle.load(f)
 
 
@@ -82,13 +82,16 @@ def login():
 # Prediction route
 @app.route("/api/predict", methods=["POST"])
 def predict():
-    data = request.json
-    features = [
-        [float(data["humidity"]), float(data["windSpeed"]), float(data["pressure"])]
-    ]
+    try:
+        data = request.json
+        features = [
+            [float(data["humidity"]), float(data["windSpeed"]), float(data["pressure"])]
+        ]
 
-    prediction = model.predict(features)[0]
-    return jsonify({"prediction": round(prediction, 2)}) # Round to 2 decimal places
+        prediction = model.predict(features)[0]
+        return jsonify({"prediction": round(prediction, 2)})
+    except ValueError:
+        return jsonify({"error": "Invalid input: all values must be numeric"}), 400
 
 
 if __name__ == "__main__":
