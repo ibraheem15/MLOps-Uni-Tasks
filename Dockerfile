@@ -13,8 +13,8 @@ RUN mkdir -p models
 # Copy only backend files
 COPY backend/ backend/
 
-# Copy models if they exist, with error suppression
-COPY models/* models/ 2>/dev/null || true
+# Copy models 
+COPY models models/ 2>/dev/null || :
 
 EXPOSE 5000
 
