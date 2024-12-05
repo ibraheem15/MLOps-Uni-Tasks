@@ -28,7 +28,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///weather_app.db"
 db = SQLAlchemy(app)
 
 # Load model
-with open("D:\FAST\Semester 7\MLOps\Project\MLOps_Project\models\model.pkl", "rb") as f:
+with open("models/model.pkl", "rb") as f:
     model = pickle.load(f)
 
 
