@@ -88,7 +88,7 @@ def predict():
     ]
 
     prediction = model.predict(features)[0]
-    return jsonify({"prediction": round(prediction, 2)})
+    return jsonify({"prediction": round(prediction, 2)}) # Round to 2 decimal places
 
 
 if __name__ == "__main__":
