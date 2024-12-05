@@ -7,9 +7,14 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
+# Create models directory
+RUN mkdir -p models
+
 # Copy only backend files
 COPY backend/ backend/
-COPY models/ models/
+
+# Copy models if they exist, with error suppression
+COPY models/* models/ 2>/dev/null || true
 
 EXPOSE 5000
 
