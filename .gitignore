@@ -167,3 +167,5 @@ processed_data.csv
 model.pkl
 raw_data.csv
 weather_scaler.joblib
+mlartifacts/
+mlruns/
