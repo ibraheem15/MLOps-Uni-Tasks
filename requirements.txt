@@ -1,5 +1,5 @@
 apache-airflow==2.10.0
-Flask==3.1.0
+Flask==2.2.1
 flask_cors==5.0.0
 flask_login==0.6.3
 flask_sqlalchemy==3.1.1
