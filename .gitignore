@@ -169,3 +169,9 @@ raw_data.csv
 weather_scaler.joblib
 mlartifacts/
 mlruns/
+
+# airflow
+logs/
+plugins/
+airflow.cfg
+airflow.db

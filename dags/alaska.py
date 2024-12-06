@@ -1,16 +1,15 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from fetch_data import fetch_and_format_weather_data 
+from fetch_data import fetch_and_format_weather_data
 from preprocess import WeatherDataPreprocessor
 import os
 
-# Set up paths using Windows style
-AIRFLOW_HOME = os.getenv('AIRFLOW_HOME', os.path.join(os.path.dirname(__file__), 'airflow'))
-DATA_DIR = os.path.join(AIRFLOW_HOME, 'data')
+# store the dag in the dags folder
+DATA_DIR = os.path.join('/home/ibraheem15/Documents/FAST/Mlops/MLOps_Project', 'data')
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'admin',
     'depends_on_past': False,
     'start_date': datetime(2023, 1, 1),
     'email_on_failure': False,
@@ -23,7 +22,7 @@ dag = DAG(
     'weather_pipeline',
     default_args=default_args,
     description='Weather data collection and preprocessing pipeline',
-    schedule_interval=timedelta(days=1)
+    schedule='*/1 * * * *',
 )
 
 def preprocess_data():

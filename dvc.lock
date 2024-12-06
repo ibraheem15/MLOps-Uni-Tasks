@@ -5,29 +5,29 @@ stages:
     deps:
     - path: scripts/fetch_data.py
       hash: md5
-      md5: cd11d5061d5b0d2fcdbc4dbbabe104e7
-      size: 2056
+      md5: ab61a3a2667c71f3cef084cd06216aa0
+      size: 2002
     outs:
     - path: data/raw_data.csv
       hash: md5
-      md5: 38a56f3533567c52215f609851f15ea6
-      size: 924
+      md5: 7aa30b9ab0eef17d8ff1aa56fdd38996
+      size: 906
   preprocess_data:
     cmd: python scripts/preprocess.py
     deps:
     - path: data/raw_data.csv
       hash: md5
-      md5: 38a56f3533567c52215f609851f15ea6
-      size: 924
+      md5: 7aa30b9ab0eef17d8ff1aa56fdd38996
+      size: 906
     - path: scripts/preprocess.py
       hash: md5
-      md5: 63d8cda1da65e85c212ec772824ae569
-      size: 3617
+      md5: b99401bd6cc9eb6573abbee69ce26dfd
+      size: 3512
     outs:
     - path: data/processed_data.csv
       hash: md5
-      md5: 4d60be4f345af78581c2820ada10e773
-      size: 2136
+      md5: d34cdfbcea65d79c5bcc7d4a61b2fc6b
+      size: 2115
   train_model:
     cmd: python scripts/train_model.py
     deps:
