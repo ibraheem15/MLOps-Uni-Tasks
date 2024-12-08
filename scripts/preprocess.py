@@ -42,32 +42,59 @@ class WeatherDataPreprocessor:
             raise
 
     def handle_missing_values(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Handle missing values in the dataset"""
-        # Check for missing values
+        """
+        Handle missing values in the dataset using a multi-step approach.
+        
+        Args:
+            df (pd.DataFrame): Input DataFrame with potentially missing values
+            
+        Returns:
+            pd.DataFrame: DataFrame with handled missing values
+        """
+        # Log initial missing value statistics
         missing_stats = df[self.numerical_cols].isnull().sum()
-        self.logger.info(f"Missing values before handling:\n{missing_stats}")
-
-        # Forward fill then backward fill
-        df[self.numerical_cols] = (
-            df[self.numerical_cols].fillna(method="ffill").fillna(method="bfill")
+        self.logger.info(
+            f"Missing values before handling:\n{missing_stats}"
         )
-
-        # If still has missing values, fill with column mean
-        if df[self.numerical_cols].isnull().any().any():
-            df[self.numerical_cols] = df[self.numerical_cols].fillna(
-                df[self.numerical_cols].mean()
-            )
-
-        return df
-
+    
+        # Apply forward-backward fill strategy
+        processed_df = df.copy()
+        processed_df[self.numerical_cols] = (
+            df[self.numerical_cols]
+            .fillna(method="ffill")
+            .fillna(method="bfill")
+        )
+    
+        # Apply mean imputation if any missing values remain
+        if processed_df[self.numerical_cols].isnull().any().any():
+            column_means = df[self.numerical_cols].mean()
+            processed_df[self.numerical_cols] = processed_df[self.numerical_cols].fillna(column_means)
+    
+        return processed_df
+    
     def scale_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Scale numerical features"""
+        """
+        Scale numerical features using the initialized scaler.
+        
+        Args:
+            df (pd.DataFrame): Input DataFrame with unscaled features
+            
+        Returns:
+            pd.DataFrame: DataFrame with scaled features
+            
+        Raises:
+            Exception: If scaling operation fails
+        """
         try:
-            df[self.numerical_cols] = self.scaler.fit_transform(df[self.numerical_cols])
-
-            # Save the scaler for future use
-            joblib.dump(self.scaler, "weather_scaler.joblib")
-            return df
+            scaled_df = df.copy()
+            scaled_df[self.numerical_cols] = self.scaler.fit_transform(df[self.numerical_cols])
+    
+            # Persist scaler for later use
+            scaler_path = "weather_scaler.joblib"
+            joblib.dump(self.scaler, scaler_path)
+            
+            return scaled_df
+        
         except Exception as e:
             self.logger.error(f"Error in scaling features: {str(e)}")
             raise
