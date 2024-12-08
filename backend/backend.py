@@ -43,18 +43,25 @@ class User(UserMixin, db.Model):
 with app.app_context():
     db.create_all()
 
-
-# Auth routes
 @app.route("/api/signup", methods=["POST"])
-def signup():
-    print("--------signup")
+def signup() -> tuple:
+    """Handle user signup request.
+    
+    Returns:
+        tuple: Response containing JSON message and status code
+    """
     data = request.json
     user = User.query.filter_by(email=data["email"]).first()
+    
     if user:
         return jsonify({"error": "Email already exists"}), 400
 
     hashed_password = generate_password_hash(data["password"])
-    new_user = User(email=data["email"], password=hashed_password)
+    new_user = User(
+        email=data["email"],
+        password=hashed_password
+    )
+    
     db.session.add(new_user)
     db.session.commit()
 
@@ -62,30 +69,41 @@ def signup():
 
 
 @app.route("/api/login", methods=["POST"])
-def login():
+def login() -> tuple:
+    """Handle user login request.
+    
+    Returns:
+        tuple: Response containing JWT token or error message with status code
+    """
     data = request.json
     user = User.query.filter_by(email=data["email"]).first()
 
     if user and check_password_hash(user.password, data["password"]):
         token = jwt.encode(
-            {
+            payload={
                 "user_id": user.id,
-                "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24),
+                "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24)
             },
-            app.config["SECRET_KEY"],
+            key=app.config["SECRET_KEY"]
         )
         return jsonify({"token": token})
 
     return jsonify({"error": "Invalid credentials"}), 401
 
 
-# Prediction route
 @app.route("/api/predict", methods=["POST"])
-def predict():
+def predict() -> tuple:
+    """Make temperature prediction based on weather features.
+    
+    Returns:
+        tuple: Response containing prediction value
+    """
     data = request.json
-    features = [
-        [float(data["humidity"]), float(data["windSpeed"]), float(data["pressure"])]
-    ]
+    features = [[
+        float(data["humidity"]),
+        float(data["windSpeed"]), 
+        float(data["pressure"])
+    ]]
 
     prediction = model.predict(features)[0]
     return jsonify({"prediction": round(prediction, 2)})
