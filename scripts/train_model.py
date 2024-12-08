@@ -1,20 +1,47 @@
+"""
+Weather prediction model training script using Linear Regression.
+"""
+
 import pandas as pd
-from sklearn.linear_model import LinearRegression
 import pickle
 import mlflow
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
+from typing import Tuple
 
-# Set MLFlow tracking URI and experiment
-mlflow.set_tracking_uri("http://localhost:5000")
-mlflow.set_experiment("weather_prediction")
+# Constants
+DATA_PATH = 'data/processed_data.csv'
+MLFLOW_URI = "http://localhost:5000"
+EXPERIMENT_NAME = "weather_prediction"
+FEATURES = ['Humidity (%)', 'Wind Speed (m/s)', 'Pressure (hPa)']
+TARGET = 'Temperature Max (°C)'
+TEST_SIZE = 0.2
+RANDOM_STATE = 42
 
-# Load and split data
-df = pd.read_csv('data/processed_data.csv')
-X = df[['Humidity (%)', 'Wind Speed (m/s)', 'Pressure (hPa)']]
-y = df['Temperature Max (°C)']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+def load_and_split_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+    """
+    Load data from CSV and split into training and test sets.
+    
+    Returns:
+        Tuple containing X_train, X_test, y_train, y_test
+    """
+    df = pd.read_csv(DATA_PATH)
+    X = df[FEATURES]
+    y = df[TARGET]
+    
+    return train_test_split(
+        X, y,
+        test_size=TEST_SIZE,
+        random_state=RANDOM_STATE
+    )
 
+# Initialize MLFlow tracking
+mlflow.set_tracking_uri(MLFLOW_URI)
+mlflow.set_experiment(EXPERIMENT_NAME)
+
+# Load and split the data
+X_train, X_test, y_train, y_test = load_and_split_data()
 # Start MLFlow run
 with mlflow.start_run(run_name="linear_regression_model") as run:
     # Train model
