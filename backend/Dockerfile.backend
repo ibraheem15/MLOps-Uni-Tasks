@@ -10,12 +10,12 @@ RUN pip install -r requirements.txt
 # Create models directory
 RUN mkdir -p models
 
-# Copy only backend files
-COPY backend/ backend/
+# COPY all files
+COPY . .
 
 # Copy models 
 COPY models/ models/
 
 EXPOSE 5000
 
-CMD ["python", "backend/backend.py"]
+CMD ["python", "backend.py"]
