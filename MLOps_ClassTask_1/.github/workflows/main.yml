@@ -1,0 +1,33 @@
+# .github/workflows/main.yml
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'  # Use your Python version
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Deploy to Vercel
+      run: |
+        npm install -g vercel
+        vercel --token ${{ secrets.VERCEL_TOKEN }} --prod
+      env:
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

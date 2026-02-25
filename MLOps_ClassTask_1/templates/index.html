@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Input</title>
+</head>
+<body>
+    <h1>Enter Data for Prediction</h1>
+    
+    <form id="prediction-form" method="POST" action="/predict">
+        <label for="features">Enter features (comma-separated):</label>
+        <input type="text" id="features" name="features" required>
+        <button type="submit">Predict</button>
+    </form>
+    
+    <!-- Section to display the prediction result -->
+    <div id="result">
+        {% if prediction is not none %}
+            <h2>Prediction Result: {% if prediction == 0 %}Iris-setosa{% elif prediction == 1 %}Iris-versicolor{% elif prediction == 2 %}Iris-virginica{% endif %}</h2>
+        {% elif error is not none %}
+            <h2 style="color:red;">Error: {{ error }}</h2>
+        {% endif %}
+    </div>
+</body>
+</html>
